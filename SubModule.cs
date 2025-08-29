@@ -1,26 +1,27 @@
-﻿using TaleWorlds.MountAndBlade;
+﻿using HarmonyLib;
+using TaleWorlds.Core;
+using TaleWorlds.MountAndBlade;
 
 
 namespace DK_Collection
 {
     public class SubModule : MBSubModuleBase
     {
-        protected override void OnSubModuleLoad()
+        protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
-            base.OnSubModuleLoad();
-
+            base.OnGameStart(game, gameStarterObject);
+            Harmony harmony = new Harmony("dk_collection");
+            harmony.PatchAll();
         }
 
-        protected override void OnSubModuleUnloaded()
+        public override void OnMissionBehaviorInitialize(Mission mission)
         {
-            base.OnSubModuleUnloaded();
-
+            base.OnMissionBehaviorInitialize(mission);
+            if (mission.CombatType.ToString() == "Combat")
+            {
+                mission.AddMissionBehavior(new dk_Bleed.BleedMissionBehavior());
+            }
         }
 
-        protected override void OnBeforeInitialModuleScreenSetAsRoot()
-        {
-            base.OnBeforeInitialModuleScreenSetAsRoot();
-
-        }
     }
 }
