@@ -27,6 +27,12 @@ namespace DukisCollection.dk_Death
                 }
 
                 float deathChance = (1f - __result) * multiplier;
+
+                if (MCMSettings.Instance.DeathDebug)
+                {
+                    Utils.Log($"Death chance: {(int)(MBMath.ClampFloat(deathChance, 0f, 1f) * 100)}%, was {(int)((1f - __result) * 100)}%");
+                }
+
                 __result = 1f - MBMath.ClampFloat(deathChance, 0f, 1f);
             }
         }

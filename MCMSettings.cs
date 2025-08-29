@@ -15,6 +15,10 @@ namespace DukisCollection
         [SettingPropertyGroup("Bleed")]
         public bool EnableBleed { get; set; } = true;
 
+        [SettingPropertyBool("Proc info debug", Order = 0, RequireRestart = false, HintText = "Enable to display bleed proc chance detail on hit")]
+        [SettingPropertyGroup("Bleed")]
+        public bool BleedDebug { get; set; } = false;
+
 
         [SettingPropertyBool("Enable Partial Tourney Reward", Order = 0, IsToggle = true, RequireRestart = false, HintText = "When enabled, losing a tourney will still reward some gold based on round reached.")]
         [SettingPropertyGroup("Partial Tourney Reward")]
@@ -38,6 +42,10 @@ namespace DukisCollection
         [SettingPropertyFloatingInteger("Death chance multiplier", 0, 100, Order = 1, RequireRestart = false, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die. Applies to Player, Companions & Lords.")]
         [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
         public float DeathFactor { get; set; } = 5;
+
+        [SettingPropertyFloatingInteger("Death chance info debug", 0, 100, Order = 9, RequireRestart = false, HintText = "Enable to display death chance info on hero death")]
+        [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
+        public bool DeathDebug { get; set; } = false;
 
     }
 }

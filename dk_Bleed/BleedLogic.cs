@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace DukisCollection.dk_Bleed
@@ -52,7 +53,7 @@ namespace DukisCollection.dk_Bleed
             }
 
             procChance = Math.Min(procChance, 100.0f);
-            if (true && attacker.IsMainAgent || victim.IsMainAgent)
+            if (MCMSettings.Instance.BleedDebug && (attacker.IsMainAgent || victim.IsMainAgent))
             {
                 Utils.Log($"Proc chance: {(int)(procChance)}(base:{baseChance}, dmg:+{(int)(damagePercent * 50.0f)}, arm:-{(int)(armorRatio * 20.0f)}, hp:-{(int)(healthPercent * 30.0f)}, body:*{bodyPartFactor})");
             }
@@ -89,15 +90,11 @@ namespace DukisCollection.dk_Bleed
             bleedStatus.Agent.Health = Math.Max(minHealth, bleedStatus.Agent.Health - bleedStatus.BleedTick);
             bleedStatus.Bled += bleedStatus.BleedTick;
 
-            //Utils.Log("Bleeding! -" + bleedStatus.BleedTick + "(" + bleedStatus.Bled + "/" + bleedStatus.BleedAmount + ")");
+            //Utils.Log("Bleeding! -" + bleedStatus.BleedTick + " (" + bleedStatus.Bled + "/" + bleedStatus.BleedAmount + ")" + " Remaining Health: " + bleedStatus.Agent.Health);
 
-            if (bleedStatus.Agent.Health == 0 && bleedStatus.Agent.IsActive())
+            if (bleedStatus.Agent.Health < 1f && bleedStatus.Agent.IsActive()) 
             {
-                Blow killingBlow = bleedStatus.Blow;
-                killingBlow.InflictedDamage = bleedStatus.Bled;
-
-                bleedStatus.Agent.Die(killingBlow);
-
+                KillAgent(bleedStatus.Agent, bleedStatus.Attacker, bleedStatus.Bled);
                 return;
             }
 
@@ -105,7 +102,7 @@ namespace DukisCollection.dk_Bleed
             bleedStatus.NextTick = MissionTime.SecondsFromNow(secondsTilNextTick);
         }
 
-        public void AddBleed(Agent victim, Agent attacker, Blow blow, int bleedAmount)
+        public void AddBleed(Agent victim, Agent attacker, int bleedAmount)
         {
             if (BleedingAgents.TryGetValue(victim.Index, out BleedStatus? bleedStatus))
             {
@@ -113,28 +110,64 @@ namespace DukisCollection.dk_Bleed
                 bleedStatus.BleedAmount += (int)(ticksLeft + bleedAmount * 0.2f);
                 bleedStatus.BleedTick++;
                 bleedStatus.BleedStack++;
-                bleedStatus.Blow = blow;
             }
             else
             {
                 BleedingAgents[victim.Index] = new BleedStatus 
                 {
                     Agent = victim,
-                    AttackerId = attacker.Index,
-                    Blow = blow,
+                    Attacker = attacker,
                     BleedAmount = bleedAmount,
                     BleedTick = (int)(Math.Ceiling(bleedAmount / 20f)),
                     NextTick = MissionTime.SecondsFromNow(1)
                 };
             }
         }
+
+        private static void KillAgent(Agent victim, Agent attacker, int bled)
+        {
+            Blow blow = new Blow(attacker.Index);
+            blow.DamageType = DamageTypes.Blunt;
+            blow.BoneIndex = victim.Monster.HeadLookDirectionBoneIndex;
+            blow.GlobalPosition = victim.Position;
+            blow.GlobalPosition.z += victim.GetEyeGlobalHeight();
+            blow.BaseMagnitude = 1f;
+            blow.WeaponRecord.FillAsMeleeBlow(null, null, -1, -1);
+            blow.InflictedDamage = bled;
+            blow.SwingDirection = victim.LookDirection;
+            if (Mission.Current.InputManager.IsGameKeyDown(2))
+            {
+                blow.SwingDirection = victim.Frame.rotation.TransformToParent(new Vec3(-1f, 0));
+                blow.SwingDirection.Normalize();
+            }
+            else if (Mission.Current.InputManager.IsGameKeyDown(3))
+            {
+                blow.SwingDirection = victim.Frame.rotation.TransformToParent(new Vec3(1f, 0));
+                blow.SwingDirection.Normalize();
+            }
+            else if (Mission.Current.InputManager.IsGameKeyDown(1))
+            {
+                blow.SwingDirection = victim.Frame.rotation.TransformToParent(new Vec3(0f, -1f));
+                blow.SwingDirection.Normalize();
+            }
+            else if (Mission.Current.InputManager.IsGameKeyDown(0))
+            {
+                blow.SwingDirection = victim.Frame.rotation.TransformToParent(new Vec3(0f, 1f));
+                blow.SwingDirection.Normalize();
+            }
+
+            blow.Direction = blow.SwingDirection;
+            blow.DamageCalculated = true;
+            sbyte mainHandItemBoneIndex = attacker.Monster.MainHandItemBoneIndex;
+            AttackCollisionData collisionData = AttackCollisionData.GetAttackCollisionDataForDebugPurpose(_attackBlockedWithShield: false, _correctSideShieldBlock: false, _isAlternativeAttack: false, _isColliderAgent: true, _collidedWithShieldOnBack: false, _isMissile: false, _isMissileBlockedWithWeapon: false, _missileHasPhysics: false, _entityExists: false, _thrustTipHit: false, _missileGoneUnderWater: false, _missileGoneOutOfBorder: false, CombatCollisionResult.StrikeAgent, -1, 0, 2, blow.BoneIndex, BoneBodyPartType.Head, mainHandItemBoneIndex, Agent.UsageDirection.AttackLeft, -1, CombatHitResultFlags.NormalHit, 0.5f, 1f, 0f, 0f, 0f, 0f, 0f, 0f, Vec3.Up, blow.Direction, blow.GlobalPosition, Vec3.Zero, Vec3.Zero, victim.Velocity, Vec3.Up);
+            victim.RegisterBlow(blow, in collisionData);
+        }
     }
 
     public class BleedStatus
     {
         public Agent Agent { get; set; }
-        public int AttackerId { get; set; }
-        public Blow Blow { get; set; }
+        public Agent Attacker { get; set; }
         public int BleedAmount { get; set; }
         public int BleedTick { get; set; }
         public int BleedStack { get; set; } = 1;

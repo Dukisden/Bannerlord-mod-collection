@@ -61,7 +61,7 @@ namespace DukisCollection.dk_Bleed
                 {
                     BleedLogic.BleedTick(bleedStatus);
 
-                    if (bleedStatus.Bled >= bleedStatus.BleedAmount || bleedStatus.Agent.Health <= 1)
+                    if (bleedStatus.Bled >= bleedStatus.BleedAmount || !bleedStatus.Agent.IsActive())
                     {
                         toRemove.Add(index);
                     }
