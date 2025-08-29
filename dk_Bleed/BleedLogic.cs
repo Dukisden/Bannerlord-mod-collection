@@ -109,10 +109,11 @@ namespace DK_Collection.dk_Bleed
         {
             if (BleedingAgents.TryGetValue(victim.Index, out BleedStatus? bleedStatus))
             {
-                int ticksLeft = (bleedStatus.BleedAmount - bleedStatus.Bled) / bleedStatus.BleedTick;
+                int ticksLeft = Math.Max(0, (bleedStatus.BleedAmount - bleedStatus.Bled) / bleedStatus.BleedTick);
                 bleedStatus.BleedAmount += (int)(ticksLeft + bleedAmount * 0.2f);
                 bleedStatus.BleedTick++;
                 bleedStatus.BleedStack++;
+                bleedStatus.Blow = blow;
             }
             else
             {
