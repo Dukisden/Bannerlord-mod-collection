@@ -53,7 +53,7 @@ namespace DK_Collection.dk_Damage
 
             if (attackerWeapon != null && attackerWeapon.WeaponFlags.HasAnyFlag(WeaponFlags.BonusAgainstShield))
             {
-                int extraDamage = (int)(inflictedDamage * 1.5f);
+                int extraDamage = (int)(inflictedDamage * 0.5f);
                 inflictedDamage += extraDamage;
                 if (true && attackInformation.AttackerAgent.IsMainAgent || attackInformation.VictimAgent.IsMainAgent)
                 {
