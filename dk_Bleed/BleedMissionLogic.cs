@@ -3,7 +3,7 @@ using TaleWorlds.MountAndBlade;
 using System.Collections.Generic;
 using TaleWorlds.Core;
 
-namespace DK_Collection.dk_Bleed
+namespace DukisCollection.dk_Bleed
 {
     public class BleedMissionBehavior : MissionBehavior
     {
@@ -35,11 +35,16 @@ namespace DK_Collection.dk_Bleed
 
             if (bleedAmount > 0)
             {
-                if (true && attacker.IsMainAgent || victim.IsMainAgent)
+                if (attacker.IsMainAgent || victim.IsMainAgent)
                 {
-                    Utils.Log($"Bleeding for {bleedAmount}/{victim.Health}, procced at {(int)(bleedChance*100)}%");
+                    string info = $"Bleeding for {bleedAmount}";
+                    if (MCMSettings.Instance.BleedDebug)
+                    {
+                        info += $", victim hp: {victim.Health}, procced at {(int)(bleedChance * 100)}%";
+                    }
+                    Utils.Log(info);
                 }
-                BleedManager.AddBleed(victim, attacker, blow, bleedAmount);
+                BleedManager.AddBleed(victim, attacker, bleedAmount);
             }
         }
 

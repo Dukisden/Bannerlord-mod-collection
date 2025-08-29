@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
-namespace DK_Collection.dk_Bleed
+namespace DukisCollection.dk_Bleed
 {
     internal class BleedLogic
     {

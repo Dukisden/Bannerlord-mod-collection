@@ -4,10 +4,10 @@ using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Library;
 
-namespace DK_Collection.dk_Companions
+namespace DukisCollection.dk_Companions
 {
     [HarmonyPatch]
-    internal class Patcher
+    internal class CompanionPatcher
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(RemoveCompanionAction), nameof(RemoveCompanionAction.ApplyByDeath))]

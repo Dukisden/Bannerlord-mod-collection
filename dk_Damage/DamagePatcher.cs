@@ -3,10 +3,10 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace DK_Collection.dk_Damage
+namespace DukisCollection.dk_Damage
 {
     [HarmonyPatch]
-    internal class Patcher
+    internal class DamagePatcher
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MissionCombatMechanicsHelper), "ComputeBlowDamage")]
@@ -53,7 +53,7 @@ namespace DK_Collection.dk_Damage
 
             if (attackerWeapon != null && attackerWeapon.WeaponFlags.HasAnyFlag(WeaponFlags.BonusAgainstShield))
             {
-                int extraDamage = (int)(inflictedDamage * 0.5f);
+                int extraDamage = (int)(inflictedDamage * 0.75f);
                 inflictedDamage += extraDamage;
                 if (true && attackInformation.AttackerAgent.IsMainAgent || attackInformation.VictimAgent.IsMainAgent)
                 {

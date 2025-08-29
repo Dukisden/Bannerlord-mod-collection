@@ -4,10 +4,10 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.Settlements;
 
-namespace DK_Collection.dk_Tourney
+namespace DukisCollection.dk_Tourney
 {
     [HarmonyPatch]
-    internal class Patcher
+    internal class TourneyPatcher
     {
         [HarmonyPrefix]
         [HarmonyPatch(typeof(TournamentBehavior), "OnPlayerEliminated")]

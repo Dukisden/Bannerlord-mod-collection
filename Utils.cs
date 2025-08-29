@@ -1,6 +1,6 @@
 ﻿using TaleWorlds.Library;
 
-namespace DK_Collection
+namespace DukisCollection
 {
     internal class Utils
     {

@@ -1,19 +1,12 @@
 ﻿using HarmonyLib;
-using Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.CharacterDevelopment;
-using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.CampaignSystem.GameComponents;
 
-namespace DK_Collection.dk_Death
+namespace DukisCollection.dk_Death
 {
-    internal class Patcher
+    [HarmonyPatch]
+    internal class DeathPatcher
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(DefaultPartyHealingModel), "GetSurvivalChance")]

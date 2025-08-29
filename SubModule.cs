@@ -3,14 +3,14 @@ using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 
-namespace DK_Collection
+namespace DukisCollection
 {
     public class SubModule : MBSubModuleBase
     {
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
             base.OnGameStart(game, gameStarterObject);
-            Harmony harmony = new Harmony("dk_collection");
+            Harmony harmony = new Harmony("DukisCollection");
             harmony.PatchAll();
         }
 
