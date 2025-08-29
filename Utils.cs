@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.Library;
+﻿using TaleWorlds.Library;
 
-namespace DK_Collection.Utils
+namespace DK_Collection
 {
     internal class Utils
     {
@@ -25,5 +20,6 @@ namespace DK_Collection.Utils
             if (value > max) return max;
             return value;
         }
+
     }
 }
