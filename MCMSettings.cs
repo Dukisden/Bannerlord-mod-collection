@@ -30,10 +30,9 @@ namespace DK_Collection
         [SettingPropertyGroup("Death Settings")]
         public bool EnableDeath { get; set; } = true;
 
-        [SettingPropertyInteger("Death chance factor", 0, 100, Order = 1, RequireRestart = false, HintText = "0 = no change; 50 = twice more likely to die; 100 = always die")]
+        [SettingPropertyInteger("Death chance multiplier", 0, 100, Order = 1, RequireRestart = false, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die. Applies to Player, Companions & Lords.")]
         [SettingPropertyGroup("Death Settings")]
-        public int DeathFactor { get; set; } = 50;
-
+        public float DeathFactor { get; set; } = 5;
 
     }
 }

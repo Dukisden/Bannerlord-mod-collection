@@ -26,14 +26,15 @@ namespace DK_Collection.dk_Death
 
             if (character.IsHero)
             {
-                float factor = 0.5f;
+                float multiplier = 2f;
 
                 if (MCMSettings.Instance != null)
                 {
-                    factor = 1f - (MCMSettings.Instance.DeathFactor / 100f);
+                    multiplier = MCMSettings.Instance.DeathFactor;
                 }
 
-                __result *= factor;
+                float deathChance = (1f - __result) * multiplier;
+                __result = 1f - MBMath.ClampFloat(deathChance, 0f, 1f);
             }
         }
     }
