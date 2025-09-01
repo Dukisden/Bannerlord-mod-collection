@@ -1,6 +1,7 @@
 ﻿using MCM.Abstractions.Attributes;
 using MCM.Abstractions.Attributes.v2;
 using MCM.Abstractions.Base.Global;
+using System;
 
 namespace DukisCollection
 {
@@ -46,6 +47,16 @@ namespace DukisCollection
         [SettingPropertyFloatingInteger("Death chance info debug", 0, 100, Order = 9, RequireRestart = false, HintText = "Enable to display death chance info on hero death")]
         [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
         public bool DeathDebug { get; set; } = false;
+
+
+        [SettingPropertyGroup("Toolbox", GroupOrder = 99)]
+        [SettingPropertyButton("Force assault on player siege", Order = 0, RequireRestart = false, HintText = "When the player is defending or attacking a settlement, force the besieging AI to launch the assault.", Content = "Force Assault")]
+        public Action ForceAssault { get; set; } = delegate ()
+        {
+            MCMSettings.Instance.ForceAssaultToggle = true;
+        };
+
+        public bool ForceAssaultToggle { get; set; } = false;
 
     }
 }
