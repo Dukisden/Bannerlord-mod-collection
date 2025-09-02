@@ -3,7 +3,7 @@
 ## Partial Tourney Reward
 - Toggleable On/Off (default is OFF)
 
-In tournament, you now receives a small gold reward when losing, based on what round you reached.
+In tournaments, you now receive a small gold reward when losing, based on what round you reached.
 
 ## Preserve Companions
 - Toggleable On/Off (default is ON)
@@ -11,7 +11,7 @@ In tournament, you now receives a small gold reward when losing, based on what r
 When a companion dies, a prompt will ask you if you want to honor the companion by making them a member of your clan.  
 If you chose yes, the dead companion will appear on your clan encyclopedia as a dead member.
 
-## Type Damage Modifiers
+## Damage Type Modifiers
 - Toggleable On/Off (default is OFF)
 
 Sligthly increases Blunt damage against armor.  
@@ -47,4 +47,4 @@ Bleed cannot kill the player, it will leave you at 1hp.
 
 ## Toolbox
 ### Force Assault
-When are part of an army besieging a settlement, or part of the defenders, you can press this button to force start the assault.
+When you are part of an army besieging a settlement, or part of the defenders, you can press this button to force start the assault.
