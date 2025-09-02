@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 
@@ -7,9 +6,9 @@ namespace DukisCollection
 {
     public class SubModule : MBSubModuleBase
     {
-        protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
+        protected override void OnSubModuleLoad()
         {
-            base.OnGameStart(game, gameStarterObject);
+            base.OnSubModuleLoad();
             Harmony harmony = new Harmony("DukisCollection");
             harmony.PatchAll();
         }
