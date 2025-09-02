@@ -10,36 +10,14 @@ namespace DukisCollection.dk_Damage
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MissionCombatMechanicsHelper), "ComputeBlowDamage")]
-        public static void IncreaseBluntVsArmor(in AttackInformation attackInformation, in AttackCollisionData attackCollisionData, WeaponComponentData attackerWeapon, DamageTypes damageType, float magnitude, int speedBonus, bool cancelDamage, ref int inflictedDamage, ref int absorbedByArmor)
+        public static void BlowDamagePatch(in AttackInformation attackInformation, in AttackCollisionData attackCollisionData, WeaponComponentData attackerWeapon, DamageTypes damageType, float magnitude, int speedBonus, bool cancelDamage, ref int inflictedDamage, ref int absorbedByArmor)
         {
-            if (MCMSettings.Instance != null && !MCMSettings.Instance.EnableDamage)
+            if (MCMSettings.Instance.EnableDamage)
             {
-                return;
+                AmpliflyArmorEffect(attackInformation, attackerWeapon, damageType, ref inflictedDamage, ref absorbedByArmor);
             }
 
-            if (damageType == DamageTypes.Blunt)
-            {
-                int extraDamage = (int)(absorbedByArmor * 0.2f);
-                inflictedDamage += extraDamage;
-                absorbedByArmor -= extraDamage;
-                if (true && attackInformation.AttackerAgent.IsMainAgent || attackInformation.VictimAgent.IsMainAgent)
-                {
-                    Utils.Log($"Blunt damage increased by {extraDamage}");
-                }
-                return;
-            }
 
-            if (damageType == DamageTypes.Cut && !attackerWeapon.WeaponClass.ToString().Contains("Axe"))
-            {
-                int reducedDamage = (int)(absorbedByArmor * 0.2f);
-                inflictedDamage -= reducedDamage;
-                absorbedByArmor += reducedDamage;
-                if (true && attackInformation.AttackerAgent.IsMainAgent || attackInformation.VictimAgent.IsMainAgent)
-                {
-                    Utils.Log($"Cut damage reduced by {reducedDamage}");
-                }
-                return;
-            }
         }
 
         [HarmonyPostfix]
@@ -59,6 +37,33 @@ namespace DukisCollection.dk_Damage
                 {
                     Utils.Log($"Shield damage increased by {extraDamage}");
                 }
+            }
+        }
+
+        public static void AmpliflyArmorEffect(in AttackInformation attackInformation, WeaponComponentData attackerWeapon, DamageTypes damageType, ref int inflictedDamage, ref int absorbedByArmor)
+        {
+            if (damageType == DamageTypes.Blunt)
+            {
+                int extraDamage = (int)(absorbedByArmor * 0.2f);
+                inflictedDamage += extraDamage;
+                absorbedByArmor -= extraDamage;
+                if (true && attackInformation.AttackerAgent.IsMainAgent || attackInformation.VictimAgent.IsMainAgent)
+                {
+                    Utils.Log($"Blunt damage increased by {extraDamage}");
+                }
+                return;
+            }
+
+            if (damageType == DamageTypes.Cut && !attackerWeapon.WeaponClass.ToString().Contains("Axe") && !attackerWeapon.WeaponClass.ToString().Contains("Dagger"))
+            {
+                int reducedDamage = (int)(absorbedByArmor * 0.2f);
+                inflictedDamage -= reducedDamage;
+                absorbedByArmor += reducedDamage;
+                if (true && attackInformation.AttackerAgent.IsMainAgent || attackInformation.VictimAgent.IsMainAgent)
+                {
+                    Utils.Log($"Cut damage reduced by {reducedDamage}");
+                }
+                return;
             }
         }
     }
