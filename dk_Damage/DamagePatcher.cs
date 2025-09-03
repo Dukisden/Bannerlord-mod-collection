@@ -33,12 +33,12 @@ namespace DukisCollection.dk_Damage
         [HarmonyPatch(typeof(MissionCombatMechanicsHelper), "ComputeBlowDamageOnShield")]
         public static void IncreaseAxeVsShield(in AttackInformation attackInformation, in AttackCollisionData attackCollisionData, WeaponComponentData attackerWeapon, float blowMagnitude, ref int inflictedDamage)
         {
-            if (MCM.EnableArmorAmplify)
+            if (!MCM.EnableArmorAmplify)
             {
                 return;
             }
 
-            float shieldMult = MCM.ShieldMult / 100;
+            float shieldMult = MCM.ShieldMult / 100f;
 
             if (attackerWeapon != null && attackerWeapon.WeaponFlags.HasAnyFlag(WeaponFlags.BonusAgainstShield))
             {
@@ -53,8 +53,8 @@ namespace DukisCollection.dk_Damage
 
         public static void AmpliflyArmorEffect(in AttackInformation attackInformation, WeaponComponentData attackerWeapon, DamageTypes damageType, ref int inflictedDamage, ref int absorbedByArmor)
         {
-            float bluntMult = MCM.BluntMult / 100;
-            float cutMult = MCM.CutMult / 100;
+            float bluntMult = MCM.BluntMult / 100f;
+            float cutMult = MCM.CutMult / 100f;
 
             if (damageType == DamageTypes.Blunt)
             {
@@ -134,7 +134,7 @@ namespace DukisCollection.dk_Damage
                 multiplier *= MCM.DamageMultiplierBodyguard;
             }
 
-            multiplier /= 100; // convert MCM's int percent for player convenience to %float
+            multiplier /= 100f; // convert MCM's int percent for player convenience to %float
 
             inflictedDamage = (int)(inflictedDamage * multiplier);
             absorbedByArmor = (int)(absorbedByArmor * multiplier);
