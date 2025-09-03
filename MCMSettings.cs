@@ -32,58 +32,58 @@ namespace DukisCollection
             [SettingPropertyGroup("Damage Modifiers/Amplify armor effect")]
             public bool EnableArmorAmplify { get; set; } = false;
 
-                [SettingPropertyFloatingInteger("Extra armor efficacy vs Cut", 0f, 2f, "#0%", Order = 1, RequireRestart = false, HintText = "0% = no change, 100% = armor absorbs twice as much")]
+                [SettingPropertyInteger("Extra armor efficacy vs Cut", 0, 200, "0'%'", Order = 1, RequireRestart = false, HintText = "0% = no change, 100% = armor absorbs twice as much")]
                 [SettingPropertyGroup("Damage Modifiers/Amplify armor effect")]
-                public float CutMult { get; set; } = 0.2f;
+                public int CutMult { get; set; } = 20;
 
-                [SettingPropertyFloatingInteger("Reduced armor efficacy vs Blunt", 0f, 1f, "#0%", Order = 2, RequireRestart = false, HintText = "0% = no change, 100% = armor has no effect vs blunt damage")]
+                [SettingPropertyInteger("Reduced armor efficacy vs Blunt", 0, 100, "0'%'", Order = 2, RequireRestart = false, HintText = "0% = no change, 100% = armor has no effect vs blunt damage")]
                 [SettingPropertyGroup("Damage Modifiers/Amplify armor effect")]
-                public float BluntMult { get; set; } = 0.2f;
+                public int BluntMult { get; set; } = 20;
 
-                [SettingPropertyFloatingInteger("Extra Axe damage vs Shields", 0f, 2f, "#0%", Order = 3, RequireRestart = false, HintText = "0% = no change, 100% = Shields take 2 times more damage from axes")]
+                [SettingPropertyInteger("Extra Axe damage vs Shields", 0, 200, "0'%'", Order = 3, RequireRestart = false, HintText = "0% = no change, 100% = Shields take 2 times more damage from axes")]
                 [SettingPropertyGroup("Damage Modifiers/Amplify armor effect")]
-                public float ShieldMult { get; set; } = 0.75f;
+                public int ShieldMult { get; set; } = 75;
 
             // Damage multipliers
             [SettingPropertyBool("Enable Damage Multipliers", Order = 0, IsToggle = true, RequireRestart = false)]
             [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
             public bool EnableDamageMults { get; set; } = false;
 
-                [SettingPropertyFloatingInteger("Player", 0f, 2f, "#0%", Order = 10, RequireRestart = false, HintText = "Adjusts the damage received by the player. 100% = no change")]
+                [SettingPropertyInteger("Player", 0, 200, "0'%'", Order = 10, RequireRestart = false, HintText = "Adjusts the damage received by the player. 100% = no change")]
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
-                public float DamageMultiplierPlayer { get; set; } = 1f;
+                public int DamageMultiplierPlayer { get; set; } = 100;
 
-                [SettingPropertyFloatingInteger("Player Family", 0f, 2f, "#0%", Order = 20, RequireRestart = false, HintText = "Adjusts the damage received by the player’s clan members. 100% = no change")]
+                [SettingPropertyInteger("Player Family", 0, 200, "0'%'", Order = 20, RequireRestart = false, HintText = "Adjusts the damage received by the player’s clan members. 100% = no change")]
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
-                public float DamageMultiplierFamily { get; set; } = 1f;
+                public int DamageMultiplierFamily { get; set; } = 100;
 
-                [SettingPropertyFloatingInteger("Player Clan", 0f, 2f, "#0%", Order = 30, RequireRestart = false, HintText = "Adjusts the damage received by the player’s clan members. 100% = no change")]
+                [SettingPropertyInteger("Player Clan", 0, 200, "0'%'", Order = 30, RequireRestart = false, HintText = "Adjusts the damage received by the player’s clan members. 100% = no change")]
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
-                public float DamageMultiplierClan { get; set; } = 1f;
+                public int DamageMultiplierClan { get; set; } = 100;
 
-                [SettingPropertyFloatingInteger("Player Troops", 0f, 2f, "#0%", Order = 40, RequireRestart = false, HintText = "Adjusts the damage received by the player’s regular troops. 100% = no change")]
+                [SettingPropertyInteger("Player Troops", 0, 200, "0'%'", Order = 40, RequireRestart = false, HintText = "Adjusts the damage received by the player’s regular troops. 100% = no change")]
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
-                public float DamageMultiplierPlayerTroops { get; set; } = 1f;
+                public int DamageMultiplierPlayerTroops { get; set; } = 100;
 
-                [SettingPropertyFloatingInteger("AI Lords", 0f, 2f, "#0%", Order = 50, RequireRestart = false, HintText = "Adjusts the damage received by AI lords. 100% = no change")]
+                [SettingPropertyInteger("AI Lords", 0, 200, "0'%'", Order = 50, RequireRestart = false, HintText = "Adjusts the damage received by AI lords. 100% = no change")]
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
-                public float DamageMultiplierAILords { get; set; } = 1f;
+                public int DamageMultiplierAILords { get; set; } = 100;
 
-                [SettingPropertyFloatingInteger("AI Troops", 0f, 2f, "#0%", Order = 60, RequireRestart = false, HintText = "Adjusts the damage received by AI troops. 100% = no change")]
+                [SettingPropertyInteger("AI Troops", 0, 200, "0'%'", Order = 60, RequireRestart = false, HintText = "Adjusts the damage received by AI troops. 100% = no change")]
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
-                public float DamageMultiplierAITroops { get; set; } = 1f;
+                public int DamageMultiplierAITroops { get; set; } = 100;
 
-                [SettingPropertyFloatingInteger("Bodyguards", 0f, 1f, "#0%", Order = 70, RequireRestart = false, HintText = "Damage received by bodyguards (for Ai lords & player with bodyguard mod.) Applies on top of other applicable multipliers.")]
+                [SettingPropertyInteger("Bodyguards", 0, 100, "0'%'", Order = 70, RequireRestart = false, HintText = "Damage received by bodyguards (for Ai lords & player with bodyguard mod.) Applies on top of other applicable multipliers.")]
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
-                public float DamageMultiplierBodyguard { get; set; } = 0.5f;
+                public int DamageMultiplierBodyguard { get; set; } = 50;
 
-                [SettingPropertyFloatingInteger("Player Formation", 0f, 1f, "#0%", Order = 80, RequireRestart = false, HintText = "Damage received by your heroes (not player) when their formation has over 15 units left. Applies on top of other applicable multipliers.")]
+                [SettingPropertyInteger("Player Formation", 0, 100, "0'%'", Order = 80, RequireRestart = false, HintText = "Damage received by your heroes (not player) when their formation has over 15 units left. Applies on top of other applicable multipliers.")]
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
-                public float DamageMultiplierFormation { get; set; } = 0.5f;
+                public int DamageMultiplierFormation { get; set; } = 50;
 
-                [SettingPropertyFloatingInteger("Ai Formation", 0f, 1f, "#0%", Order = 90, RequireRestart = false, HintText = "Damage received by Ai heroes when their formation has over 15 units left. Applies on top of other applicable multipliers.")]
+                [SettingPropertyInteger("Ai Formation", 0, 100, "0'%'", Order = 90, RequireRestart = false, HintText = "Damage received by Ai heroes when their formation has over 15 units left. Applies on top of other applicable multipliers.")]
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
-                public float DamageMultiplierAiFormation { get; set; } = 1f;
+                public int DamageMultiplierAiFormation { get; set; } = 100;
 
         // Death
         [SettingPropertyBool("Enable More Deaths", Order = 0, IsToggle = true, RequireRestart = false, HintText = "When enabled the player, lords and companions are more likely to die on the battlefield.")]

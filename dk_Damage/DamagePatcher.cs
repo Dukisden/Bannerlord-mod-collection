@@ -11,18 +11,19 @@ namespace DukisCollection.dk_Damage
     [HarmonyPatch]
     internal class DamagePatcher
     {
+        private static MCMSettings MCM = MCMSettings.Instance;
         public static Formation? BodyguardFormation = null;
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MissionCombatMechanicsHelper), "ComputeBlowDamage")]
         public static void BlowDamagePatch(in AttackInformation attackInformation, in AttackCollisionData attackCollisionData, WeaponComponentData attackerWeapon, DamageTypes damageType, float magnitude, int speedBonus, bool cancelDamage, ref int inflictedDamage, ref int absorbedByArmor)
         {
-            if (MCMSettings.Instance.EnableArmorAmplify)
+            if (MCM.EnableArmorAmplify)
             {
                 AmpliflyArmorEffect(attackInformation, attackerWeapon, damageType, ref inflictedDamage, ref absorbedByArmor);
             }
 
-            if (MCMSettings.Instance.EnableDamageMults)
+            if (MCM.EnableDamageMults)
             {
                 ApplyDamageMults(attackInformation, ref inflictedDamage, ref absorbedByArmor);
             }
@@ -32,12 +33,12 @@ namespace DukisCollection.dk_Damage
         [HarmonyPatch(typeof(MissionCombatMechanicsHelper), "ComputeBlowDamageOnShield")]
         public static void IncreaseAxeVsShield(in AttackInformation attackInformation, in AttackCollisionData attackCollisionData, WeaponComponentData attackerWeapon, float blowMagnitude, ref int inflictedDamage)
         {
-            if (MCMSettings.Instance != null && !MCMSettings.Instance.EnableArmorAmplify)
+            if (MCM.EnableArmorAmplify)
             {
                 return;
             }
 
-            float shieldMult = MCMSettings.Instance.ShieldMult;
+            float shieldMult = MCM.ShieldMult / 100;
 
             if (attackerWeapon != null && attackerWeapon.WeaponFlags.HasAnyFlag(WeaponFlags.BonusAgainstShield))
             {
@@ -52,8 +53,8 @@ namespace DukisCollection.dk_Damage
 
         public static void AmpliflyArmorEffect(in AttackInformation attackInformation, WeaponComponentData attackerWeapon, DamageTypes damageType, ref int inflictedDamage, ref int absorbedByArmor)
         {
-            float bluntMult = MCMSettings.Instance.BluntMult;
-            float cutMult = MCMSettings.Instance.CutMult;
+            float bluntMult = MCM.BluntMult / 100;
+            float cutMult = MCM.CutMult / 100;
 
             if (damageType == DamageTypes.Blunt)
             {
@@ -93,45 +94,47 @@ namespace DukisCollection.dk_Damage
 
             if (victim.IsMainAgent)
             {
-                multiplier = MCMSettings.Instance.DamageMultiplierPlayer;
+                multiplier = MCM.DamageMultiplierPlayer;
             }
             else if (isFamily(victim))
             {
-                multiplier = MCMSettings.Instance.DamageMultiplierFamily;
+                multiplier = MCM.DamageMultiplierFamily;
             }
             else if (isClan(victim))
             {
-                multiplier = MCMSettings.Instance.DamageMultiplierClan;
+                multiplier = MCM.DamageMultiplierClan;
             }
             else if (isPlayerTeam(victim))
             {
-                multiplier = MCMSettings.Instance.DamageMultiplierPlayerTroops;
+                multiplier = MCM.DamageMultiplierPlayerTroops;
             }
             else if (isAiHero(victim))
             {
-                multiplier = MCMSettings.Instance.DamageMultiplierAILords;
+                multiplier = MCM.DamageMultiplierAILords;
             }
             else
             {
-                multiplier = MCMSettings.Instance.DamageMultiplierAITroops;
+                multiplier = MCM.DamageMultiplierAITroops;
             }
 
             if (victim.IsHero && !isBodyguard(victim) && victim.Formation != null && victim.Formation.CountOfUnits > 15)
             {
                 if (isPlayerTeam(victim))
                 {
-                    multiplier *= MCMSettings.Instance.DamageMultiplierFormation;
+                    multiplier *= MCM.DamageMultiplierFormation;
                 }
                 else if (isAiHero(victim))
                 {
-                    multiplier *= MCMSettings.Instance.DamageMultiplierAiFormation;
+                    multiplier *= MCM.DamageMultiplierAiFormation;
                 }
             }
 
             if (isBodyguard(victim))
             {
-                multiplier *= MCMSettings.Instance.DamageMultiplierBodyguard;
+                multiplier *= MCM.DamageMultiplierBodyguard;
             }
+
+            multiplier /= 100; // convert MCM's int percent for player convenience to %float
 
             inflictedDamage = (int)(inflictedDamage * multiplier);
             absorbedByArmor = (int)(absorbedByArmor * multiplier);
