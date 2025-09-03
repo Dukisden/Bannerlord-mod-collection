@@ -65,7 +65,7 @@ namespace DukisCollection.dk_Death
         [HarmonyPatch(typeof(SandboxAgentDecideKilledOrUnconsciousModel), "GetAgentStateProbability")]
         public static void DieDieInCombat(Agent affectorAgent, Agent effectedAgent, ref float __result)
         {
-            if (!MCM.EnableDeath || !effectedAgent.IsHero)
+            if (!MCM.EnableDeath || !effectedAgent.IsHero || effectedAgent.Formation == null)
             {
                 return;
             }

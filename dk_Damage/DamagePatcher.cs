@@ -85,7 +85,7 @@ namespace DukisCollection.dk_Damage
         {
             Agent victim = attackInformation.VictimAgent;
 
-            if (!victim.IsActive() || victim.IsMount)
+            if (!victim.IsActive() || victim.IsMount || Mission.Current.MainAgent == null)
             {
                 return;
             }
