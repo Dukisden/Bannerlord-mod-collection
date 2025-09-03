@@ -40,7 +40,7 @@ namespace DukisCollection.dk_Death
                 {
                     multiplier = MCM.DeathFactorClan;
                 }
-                else if (hero.Clan.Kingdom == Hero.MainHero.Clan.Kingdom)
+                else if (hero.Clan != null && Hero.MainHero.Clan != null && hero.Clan.Kingdom == Hero.MainHero.Clan.Kingdom)
                 {
                     multiplier = MCM.DeathFactorKingdom;
                 }
