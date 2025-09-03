@@ -114,10 +114,6 @@ namespace DukisCollection
             [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
             public float DeathFactorFormation { get; set; } = 0.5f;
 
-            [SettingPropertyFloatingInteger("Ai Formation death chance", 0f, 1f, "0.0x", Order = 61, RequireRestart = false, HintText = "Extra death chance multiplier if the hero's formation has more than 15 alive units. 0 = never die, 1 = no change")]
-            [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
-            public float DeathFactorAiFormation { get; set; } = 1f;
-
             [SettingPropertyBool("Death chance info debug", Order = 99, RequireRestart = false, HintText = "Enable to display death chance info on hero wound")]
             [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
             public bool DeathDebug { get; set; } = false;
