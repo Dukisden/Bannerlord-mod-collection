@@ -8,10 +8,15 @@ namespace DukisCollection.dk_Damage
     [HarmonyPatch]
     internal class BodyguardFormationPatch
     {
+        public static bool Prepare()
+        {
+            Type? targetType = AccessTools.TypeByName("Bodyguards.AddBodyguardsMissionBehavior");
+
+            return targetType != null;
+        }
         public static MethodBase? TargetMethod()
         {
-            Type targetType = AccessTools.TypeByName("Bodyguards.AddBodyguardsMissionBehavior");
-            if (targetType == null) return null;
+            Type? targetType = AccessTools.TypeByName("Bodyguards.AddBodyguardsMissionBehavior");
 
             return AccessTools.Method(targetType, "TransferUnits");
         }
