@@ -69,6 +69,7 @@ namespace DukisCollection.dk_Death
             {
                 return;
             }
+
             float multiplier = 1f;
 
             if (effectedAgent.Formation.CountOfUnits > 15 && effectedAgent.Team == Mission.Current.MainAgent.Team)
@@ -76,7 +77,7 @@ namespace DukisCollection.dk_Death
                 multiplier = MCM.DeathFactorFormation;
             }
 
-            float deathChance = (1f - __result) * multiplier;
+            float deathChance = __result * multiplier;
 
             if (MCM.DeathDebug)
             {

@@ -121,17 +121,17 @@ namespace DukisCollection.dk_Damage
             {
                 if (isPlayerTeam(victim))
                 {
-                    multiplier *= MCM.DamageMultiplierFormation;
+                    multiplier *= (MCM.DamageMultiplierFormation / 100f);
                 }
                 else if (isAiHero(victim))
                 {
-                    multiplier *= MCM.DamageMultiplierAiFormation;
+                    multiplier *= (MCM.DamageMultiplierAiFormation / 100f);
                 }
             }
 
             if (isBodyguard(victim))
             {
-                multiplier *= MCM.DamageMultiplierBodyguard;
+                multiplier *= (MCM.DamageMultiplierBodyguard / 100f);
             }
 
             multiplier /= 100f; // convert MCM's int percent for player convenience to %float
