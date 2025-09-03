@@ -28,7 +28,7 @@ namespace DukisCollection
 
         // Damage
             // Amplify armor effect
-            [SettingPropertyBool("Enable Amplify armor effect", Order = 0, IsToggle = true, RequireRestart = false, HintText = "When enabled, blunt damage is less affected by armor. Cut damage is more affected by armor. Axes do more damage to shields.")]
+            [SettingPropertyBool("Enable Amplify Armor Effect", Order = 0, IsToggle = true, RequireRestart = false, HintText = "When enabled, blunt damage is less affected by armor. Cut damage is more affected by armor. Axes do more damage to shields.")]
             [SettingPropertyGroup("Damage Modifiers/Amplify armor effect")]
             public bool EnableArmorAmplify { get; set; } = false;
 
@@ -45,7 +45,7 @@ namespace DukisCollection
                 public float ShieldMult { get; set; } = 0.75f;
 
             // Damage multipliers
-            [SettingPropertyBool("Enable Damage multipliers", Order = 0, IsToggle = true, RequireRestart = false)]
+            [SettingPropertyBool("Enable Damage Multipliers", Order = 0, IsToggle = true, RequireRestart = false)]
             [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
             public bool EnableDamageMults { get; set; } = false;
 
@@ -85,19 +85,42 @@ namespace DukisCollection
                 [SettingPropertyGroup("Damage Modifiers/Damage Received Multipliers")]
                 public float DamageMultiplierAiFormation { get; set; } = 1f;
 
-
         // Death
         [SettingPropertyBool("Enable More Deaths", Order = 0, IsToggle = true, RequireRestart = false, HintText = "When enabled the player, lords and companions are more likely to die on the battlefield.")]
         [SettingPropertyGroup("More Hero Deaths")]
         public bool EnableDeath { get; set; } = false;
 
-        [SettingPropertyFloatingInteger("Death chance multiplier", 0, 100, Order = 1, RequireRestart = false, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die. Applies to Player, Companions & Lords.")]
-        [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
-        public float DeathFactor { get; set; } = 5;
+            [SettingPropertyFloatingInteger("Player death chance", 0f, 100f, "0.0x", Order = 10, RequireRestart = false, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.")]
+            [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
+            public float DeathFactorPlayer { get; set; } = 5f;
 
-        [SettingPropertyFloatingInteger("Death chance info debug", 0, 100, Order = 9, RequireRestart = false, HintText = "Enable to display death chance info on hero death")]
-        [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
-        public bool DeathDebug { get; set; } = false;
+            [SettingPropertyFloatingInteger("Player Family death chance", 0f, 100f, "0.0x", Order = 20, RequireRestart = false, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.")]
+            [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
+            public float DeathFactorFamily { get; set; } = 3f;
+
+            [SettingPropertyFloatingInteger("Player Clan death chance", 0f, 100f, "0.0x", Order = 30, RequireRestart = false, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.")]
+            [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
+            public float DeathFactorClan { get; set; } = 5f;
+
+            [SettingPropertyFloatingInteger("Player Kingdom death chance", 0f, 100f, "0.0x", Order = 40, RequireRestart = false, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.")]
+            [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
+            public float DeathFactorKingdom { get; set; } = 5f;
+
+            [SettingPropertyFloatingInteger("Ai death chance", 0f, 100f, "0.0x", Order = 50, RequireRestart = false, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.")]
+            [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
+            public float DeathFactorAi { get; set; } = 5f;
+
+            [SettingPropertyFloatingInteger("Player Formation death chance", 0f, 1f, "0.0x", Order = 60, RequireRestart = false, HintText = "Extra death chance multiplier if the hero's formation has more than 15 alive units (does not apply to player.) 0 = never die, 1 = no change")]
+            [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
+            public float DeathFactorFormation { get; set; } = 0.5f;
+
+            [SettingPropertyFloatingInteger("Ai Formation death chance", 0f, 1f, "0.0x", Order = 61, RequireRestart = false, HintText = "Extra death chance multiplier if the hero's formation has more than 15 alive units. 0 = never die, 1 = no change")]
+            [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
+            public float DeathFactorAiFormation { get; set; } = 1f;
+
+            [SettingPropertyBool("Death chance info debug", Order = 99, RequireRestart = false, HintText = "Enable to display death chance info on hero wound")]
+            [SettingPropertyGroup("More Hero Deaths", GroupOrder = 1)]
+            public bool DeathDebug { get; set; } = false;
 
         // Companions
         [SettingPropertyBool("Enable Preserve Companions", Order = 1, IsToggle = true, RequireRestart = false, HintText = "When enabled, there will be a prompt on companion death to preserve them as a dead member of your clan.")]

@@ -1,4 +1,6 @@
-﻿using TaleWorlds.Library;
+﻿using System.Linq;
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.Library;
 
 namespace DukisCollection
 {
@@ -19,6 +21,15 @@ namespace DukisCollection
             if (value < min) return min;
             if (value > max) return max;
             return value;
+        }
+
+        public static bool IsFamily(Hero hero)
+        {
+            bool check1 = hero.Siblings.Contains(Hero.MainHero);
+            bool check2 = hero.Father == Hero.MainHero || Hero.MainHero.Father == hero;
+            bool check3 = hero.Mother == Hero.MainHero || Hero.MainHero.Mother == hero;
+
+            return (check1 || check2 || check3);
         }
     }
 }

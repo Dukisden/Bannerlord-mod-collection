@@ -146,11 +146,7 @@ namespace DukisCollection.dk_Damage
 
             if (hero == null) return false;
 
-            bool check1 = hero.Siblings.Contains(Hero.MainHero);
-            bool check2 = hero.Father == Hero.MainHero || Hero.MainHero.Father == hero;
-            bool check3 = hero.Mother == Hero.MainHero || Hero.MainHero.Mother == hero;
-
-            return (check1 || check2 || check3);
+            return Utils.IsFamily(hero);
         }
 
         public static bool isClan(Agent agent)
