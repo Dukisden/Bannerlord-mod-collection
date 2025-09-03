@@ -1,5 +1,6 @@
-﻿using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
+using System;
+using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -10,6 +11,8 @@ namespace DukisCollection.dk_Damage
     [HarmonyPatch]
     internal class DamagePatcher
     {
+        public static Formation? BodyguardFormation = null;
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MissionCombatMechanicsHelper), "ComputeBlowDamage")]
         public static void BlowDamagePatch(in AttackInformation attackInformation, in AttackCollisionData attackCollisionData, WeaponComponentData attackerWeapon, DamageTypes damageType, float magnitude, int speedBonus, bool cancelDamage, ref int inflictedDamage, ref int absorbedByArmor)
@@ -100,7 +103,7 @@ namespace DukisCollection.dk_Damage
             {
                 multiplier = MCMSettings.Instance.DamageMultiplierClan;
             }
-            else if (isPlayerTroop(victim))
+            else if (isPlayerTeam(victim))
             {
                 multiplier = MCMSettings.Instance.DamageMultiplierPlayerTroops;
             }
@@ -113,9 +116,9 @@ namespace DukisCollection.dk_Damage
                 multiplier = MCMSettings.Instance.DamageMultiplierAITroops;
             }
 
-            if (victim.IsHero && victim.Formation != null && victim.Formation.CountOfUnits > 15)
+            if (victim.IsHero && !isBodyguard(victim) && victim.Formation != null && victim.Formation.CountOfUnits > 15)
             {
-                if (isPlayerTroop(victim))
+                if (isPlayerTeam(victim))
                 {
                     multiplier *= MCMSettings.Instance.DamageMultiplierFormation;
                 }
@@ -158,7 +161,6 @@ namespace DukisCollection.dk_Damage
             Hero? hero = characterObject?.HeroObject;
 
             if (hero == null) return false;
-
             return hero.Clan == Hero.MainHero.Clan;
         }
 
@@ -174,14 +176,25 @@ namespace DukisCollection.dk_Damage
             return agent.IsAIControlled;
         }
 
-        public static bool isPlayerTroop(Agent agent)
+        public static bool isPlayerTeam(Agent agent)
         {
-            return agent.IsPlayerTroop;
+            return agent.Team == Mission.Current.MainAgent.Team;
         }
 
         public static bool isBodyguard(Agent agent)
         {
-            return agent.Formation != null && agent.Formation.FormationIndex == FormationClass.Bodyguard;
+            if (agent.Formation == null)
+            {
+                return false;
+            }
+
+            if (isPlayerTeam(agent) && BodyguardFormation != null)
+            {
+                // BodyguardFormation is retrieved from the Bodyguards mod, if it's present.
+                return agent.Formation == BodyguardFormation;
+            }
+
+            return agent.Formation.FormationIndex == FormationClass.Bodyguard;
         }
     }
 }
