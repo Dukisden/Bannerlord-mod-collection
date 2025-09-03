@@ -20,6 +20,5 @@ namespace DukisCollection
             if (value > max) return max;
             return value;
         }
-
     }
 }

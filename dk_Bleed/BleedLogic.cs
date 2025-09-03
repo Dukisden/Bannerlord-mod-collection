@@ -49,7 +49,7 @@ namespace DukisCollection.dk_Bleed
 
             if (attackerWeapon.CurrentUsageItem != null && attackerWeapon.CurrentUsageItem.WeaponClass == WeaponClass.Dagger)
             {
-                procChance = Math.Max(50, procChance);
+                procChance = Math.Max(50f, procChance);
             }
 
             procChance = Math.Min(procChance, 100.0f);
