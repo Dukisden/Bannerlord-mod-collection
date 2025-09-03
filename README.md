@@ -11,19 +11,46 @@ In tournaments, you now receive a small gold reward when losing, based on what r
 When a companion dies, a prompt will ask you if you want to honor the companion by making them a member of your clan.  
 If you chose yes, the dead companion will appear on your clan encyclopedia as a dead member.
 
-## Damage Type Modifiers
+## Damage Modifiers
+### Amplify Armor Effect 
 - Toggleable On/Off (default is OFF)
+- All values configurable
 
-Sligthly increases Blunt damage against armor.  
-Slightly decreases Cut damage against armor.  
-Increases shield-breaking damage (Axes) against shields.  
+Increase Blunt damage against armor. (default +20%)  
+Decrease Cut damage (except daggers) against armor. (default -20%)  
+Increase shield-breaking damage (Axes) against shields. (default +75%)  
 The idea is to make using something other that a sword more appealing.
+
+### General Damage Received Multipliers
+- Toggleable On/Off (default is OFF)
+- All values configurable
+
+Sliders for:
+- Player
+- Player's Family
+- Player's Clan
+- Player's Troops
+- Ai Lords
+- Ai Troops
+
+There are also extra sliders for:
+- Bodyguards, both the Ai's and Player's (like those added by Bodyguards)
+- Heroes in formations that have more than 15 units alive.
 
 ## More Hero Deaths
 - Toggleable On/Off (default is OFF)
-- Configurable multiplier from 0 to 100 (default is 5)
+- All values configurable
 
-Multiply the chances to die when falling in battle for all heroes (player, lords & companions.)  
+Sliders for:
+- Player
+- Player's Family
+- Player's Clan
+- Player's Kingdom
+- Ai Lords
+
+There are also extra sliders for:
+- Heroes in formations that have more than 15 units alive.
+
 Yes it works with Death For All, will multiply whatever the chance of death is with that mod.
 
 ## Bleed
