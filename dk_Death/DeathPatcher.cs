@@ -72,7 +72,7 @@ namespace DukisCollection.dk_Death
 
             float multiplier = 1f;
 
-            if (effectedAgent.Formation.CountOfUnits > 15 && effectedAgent.Team == Mission.Current.MainAgent.Team)
+            if (effectedAgent.Formation.CountOfUnits > 15 && effectedAgent.Team == Mission.Current.PlayerTeam)
             {
                 multiplier = MCM.DeathFactorFormation;
             }
