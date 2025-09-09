@@ -134,13 +134,11 @@ namespace DukisCollection
 
         // Toolbox
         [SettingPropertyGroup("Toolbox", GroupOrder = 99)]
-        [SettingPropertyButton("Force assault on player siege", Order = 0, RequireRestart = false, HintText = "When the player is defending or attacking a settlement, force the besieging AI to launch the assault.", Content = "Force Assault")]
-        public Action ForceAssault { get; set; } = delegate ()
-        {
-            MCMSettings.Instance.ForceAssaultToggle = true;
-        };
+        [SettingPropertyBool("Command all units of army (once)", Order = 10, HintText = "The next time the player is in an army and participates in battle, the player will control all units. Resets after trigerring.", RequireRestart = false)]
+        public bool LeadAttackToggle { get; set; } = false;
 
+        [SettingPropertyGroup("Toolbox", GroupOrder = 99)]
+        [SettingPropertyBool("Force assault on player siege (once)", Order = 0, HintText = "When the player is defending or attacking a settlement, force the besieging AI to launch the assault. Resets after trigerring.", RequireRestart = false)]
         public bool ForceAssaultToggle { get; set; } = false;
-
     }
 }
