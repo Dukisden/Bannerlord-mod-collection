@@ -22,13 +22,21 @@ namespace DukisCollection
         public bool BleedDebug { get; set; } = false;
 
         // Tourney
-        [SettingPropertyBool("Enable Partial Tourney Reward", Order = 0, IsToggle = true, RequireRestart = false, HintText = "When enabled, losing a tourney will still reward some gold based on round reached.")]
+        [SettingPropertyBool("Enable Partial Tourney Reward", Order = 0, IsToggle = true, RequireRestart = false, HintText = "When enabled, losing a tourney will still reward some gold based on the round reached.")]
         [SettingPropertyGroup("Partial Tourney Reward")]
         public bool EnableTourney { get; set; } = false;
 
+            [SettingPropertyInteger("Entry Fee", 0, 1000, "g", Order = 10, RequireRestart = false, HintText = "Base cost for participating in a tournament.")]
+            [SettingPropertyGroup("Partial Tourney Reward", GroupOrder = 1)]
+            public int EntryFee { get; set; } = 100;
+
+            [SettingPropertyInteger("Round reward base", 0, 500, Order = 20, RequireRestart = false, HintText = "Base reward for winning rounds. Is then multiplied by round². For a 50 base: Round 1 = 50g, 2 = 200g, 3 = 450g")]
+            [SettingPropertyGroup("Partial Tourney Reward", GroupOrder = 1)]
+            public int RoundRewardBase { get; set; } = 50;
+
         // Damage
-            // Amplify armor effect
-            [SettingPropertyBool("Enable Amplify Armor Effect", Order = 0, IsToggle = true, RequireRestart = false, HintText = "When enabled, blunt damage is less affected by armor. Cut damage is more affected by armor. Axes do more damage to shields.")]
+        // Amplify armor effect
+        [SettingPropertyBool("Enable Amplify Armor Effect", Order = 0, IsToggle = true, RequireRestart = false, HintText = "When enabled, blunt damage is less affected by armor. Cut damage is more affected by armor. Axes do more damage to shields.")]
             [SettingPropertyGroup("Damage Modifiers/Amplify armor effect")]
             public bool EnableArmorAmplify { get; set; } = false;
 
