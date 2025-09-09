@@ -26,6 +26,7 @@ namespace DukisCollection.dk_Companions
                 () => {
                     companion.CompanionOf = null;
                     companion.Clan = clan;
+                    companion.SetNewOccupation(Occupation.Lord);
                 },
                 new Action(InformationManager.HideInquiry)
              ), true);
