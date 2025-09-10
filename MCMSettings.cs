@@ -14,13 +14,131 @@ namespace DukisCollection
         public override string FormatType => "json2";
 
         // Bleed
-        [SettingPropertyBool("Enable Bleed", Order = 0, IsToggle = true, HintText = "When enabled, strikes will have a chance to cause bleed over time. Blades cause more bleed. Hits to the head/torso cause more bleed. High damage hits cause more bleed. Healthy and armored units are less likely to bleed.", RequireRestart = false)]
+        [SettingPropertyBool("Enable Bleed", Order = 0, IsToggle = true, RequireRestart = false)]
         [SettingPropertyGroup("Bleed")]
         public bool EnableBleed { get; set; } = false;
 
-        [SettingPropertyBool("Proc info debug", Order = 0, HintText = "Enable to display bleed proc chance detail on hit", RequireRestart = false)]
-        [SettingPropertyGroup("Bleed")]
-        public bool BleedDebug { get; set; } = false;
+            [SettingPropertyBool("Info Logging", Order = 99, HintText = "Log bleed chance calculations.", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Main", GroupOrder = -10)]
+            public bool BleedDebug { get; set; } = false;
+
+            [SettingPropertyInteger("Max Bleed Duration", 5, 60, "#s", Order = 0, HintText = "Maximum duration that a bleed effect can last. If bleed damage is lower: duration will be shorter. If bleed damage is higher: bleed will deal more damage per tick. Default: 15", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Main", GroupOrder = -10)]
+            public int MaxBleedDuration { get; set; } = 20;
+
+            [SettingPropertyInteger("Relative speed of bleeding units", 0, 100, "0'%'",Order = 1, HintText = "Units affected by bleeding will move at this % of their normal speed. Default: 70", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Main", GroupOrder = -10)]
+            public int BleedSlowAmount { get; set; } = 70;
+
+            [SettingPropertyInteger("Relative speed of low hp units", 0, 100, "0'%'", Order = 2, HintText = "Units with low health will slow down proportionally to their missing HP, down to this % of their normal speed. Default: 70", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Main", GroupOrder = -10)]
+            public int SlowAmount { get; set; } = 70;
+
+            [SettingPropertyBool("Heroes can cause bleeding", Order = 3, RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Main", GroupOrder = -10)]
+            public bool canHeroesBleed { get; set; } = true;
+
+            [SettingPropertyBool("Troops can cause bleeding", Order = 4, RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Main", GroupOrder = -10)]
+            public bool canTroopBleed { get; set; } = true;
+
+            // Base chances
+            [SettingPropertyInteger("Base Chance - Player", 0, 200, "0'%'", Order = 0, HintText = "Base bleed chance against the player. Default: 20", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Base Chances")]
+            public float BC_Player { get; set; } = 20f;
+
+            [SettingPropertyInteger("Base Chance - Hero", 0, 200, "0'%'", Order = 1, HintText = "Base bleed chance against heroes. Default: 60", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Base Chances")]
+            public float BC_Hero { get; set; } = 60f;
+
+            [SettingPropertyInteger("Base Chance - Troop", 0, 200, "0'%'", Order = 2, HintText = "Base bleed chance against regular troops. Default: 100", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Base Chances")]
+            public float BC_Troop { get; set; } = 100f;
+
+            [SettingPropertyInteger("Troops proc penalty", 0, 100, "-0'%'", Order = 2, HintText = "Bleed chance penalty applied to troops. Default: 50", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Base Chances")]
+            public float BC_TroopPenalty { get; set; } = 50f;
+
+            // Core Factors
+            [SettingPropertyFloatingInteger("Damage Factor", 0f, 200f, "0", Order = 0, HintText = "Increases bleed chance the more damage the hit does compared to victim’s health. Higher = big hits bleed more often, lower = damage dealt has less importance. Default: 50", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Scaling")]
+            public float BF_Damage { get; set; } = 50f;
+
+            [SettingPropertyFloatingInteger("Armor Factor", 0f, 200f, "0", Order = 1, HintText = "Reduces bleed chance when armor blocks damage. Higher = armor protects better, lower = armor matters less. Default: 20", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Scaling")]
+            public float BF_Armor { get; set; } = 20f;
+
+            [SettingPropertyFloatingInteger("Health Factor", -200f, 200f, "0", Order = 2, HintText = "Reduces bleed chance if the victim has high hp. Positive = healthy units less likely to bleed, negative = healthy units more likely to bleed. Default: 30", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Scaling")]
+            public float BF_Health { get; set; } = 30f;
+
+            // Body Part Multipliers
+            [SettingPropertyFloatingInteger("Head Multiplier", 0f, 10f, "0.0x", Order = 0, HintText = "Final bleed multiplier for head hits. Default: 1.5", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Body Part Multipliers")]
+            public float BC_Head { get; set; } = 1.5f;
+
+            [SettingPropertyFloatingInteger("Neck Multiplier", 0f, 10f, "0.0x", Order = 1, HintText = "Final bleed multiplier for neck hits. Default: 3", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Body Part Multipliers")]
+            public float BC_Neck { get; set; } = 3.0f;
+
+            [SettingPropertyFloatingInteger("Chest Multiplier", 0f, 10f, "0.0x", Order = 2, HintText = "Final bleed multiplier for chest/abdomen hits. Default: 1", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Body Part Multipliers")]
+            public float BC_Chest { get; set; } = 1.0f;
+
+            [SettingPropertyFloatingInteger("Arms Multiplier", 0f, 10f, "0.0x", Order = 4, HintText = "Final bleed multiplier for shoulder/arm hits. Default: 0.1", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Body Part Multipliers")]
+            public float BC_Arms { get; set; } = 0.1f;
+
+            [SettingPropertyFloatingInteger("Legs Multiplier", 0f, 10f, "0.0x", Order = 5, HintText = "Final bleed multiplier for leg hits. Default: 0.3", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Body Part Multipliers")]
+            public float BC_Legs { get; set; } = 0.3f;
+
+            // Minimum chances
+            [SettingPropertyInteger("Minimum Damage to trigger bleed", 0, 100, "0", Order = 0, HintText = "Hits bellow this value will never cause bleeding. Default: 10", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Minimum Chances")]
+            public float MinDamageForBleed { get; set; } = 10;
+
+            [SettingPropertyInteger("Minimum Bleed Chance", 0, 100, "0'%'", Order = 1, HintText = "Minimun chance to bleed (before bodypart multiplier). Default: 20", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Minimum Chances")]
+            public float BleedMinChance { get; set; } = 20f;
+
+            [SettingPropertyInteger("Minimum Bleed Chance (Daggers)", 0, 100, "0'%'", Order = 2, HintText = "The absolute lowest bleed chance with a dagger (after bodypart multiplier). Default: 50", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Proc/Minimum Chances")]
+            public float BleedMinChanceDagger { get; set; } = 50f;
+
+            // Damage
+            [SettingPropertyInteger("Bleed % of damage dealt", 0, 200, "0'%'", Order = 0, HintText = "Units will bleed for this % of the damage that caused bleeding. Default: 66", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Damage/Base")]
+            public float BD_Base { get; set; } = 66f;
+
+            [SettingPropertyInteger("Cut damage armor reduction", 0, 200, "0'%'", Order = 1, HintText = "Reduce bleed damage by this % of the hit's damage absorbded by armor. Default: 50", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Damage/Base")]
+            public float BD_ArmorCut { get; set; } = 50f;
+
+            [SettingPropertyInteger("Cut damage max armor reduction", 0, 100, "#", Order = 2, HintText = "Maximum bleed reduction from armor when hit with cut damage. Default: 30", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Damage/Base")]
+            public float BD_ArmorFlat { get; set; } = 30f;
+
+            [SettingPropertyInteger("Missile multiplier", 0, 200, "0'%'", Order = 3, HintText = "Bleed damage modifier for missiles. Default: 50", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Damage/Base")]
+            public float BD_Missile { get; set; } = 50f;
+
+            [SettingPropertyInteger("Pierce multiplier", 0, 200, "0'%'", Order = 4, HintText = "Bleed damage modifier for piercing damage. Default: 66", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Damage/Base")]
+            public float BD_Pierce { get; set; } = 66f;
+
+            [SettingPropertyInteger("Blunt multiplier", 0, 200, "0'%'", Order = 5, HintText = "Bleed damage modifier for blunt damage. Default: 33", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Damage/Base")]
+            public float BD_Blunt { get; set; } = 33f;
+
+            // Stack
+            [SettingPropertyInteger("Flat Tick Bonus per Stack", 0, 10, "#", Order = 0, HintText = "Flat amount of extra bleed damage per tick added for each additional bleed stack. This escalates fast. Default: 1", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Damage/Stacks")]
+            public int BleedStackFlat { get; set; } = 1;
+
+            [SettingPropertyInteger("Percent of new hit damage added per Stack (%)", 0, 100, "#'%'", Order = 1, HintText = "Percentage of the new hit damage added to current bleed for each additional stack. Default: 15", RequireRestart = false)]
+            [SettingPropertyGroup("Bleed/Damage/Stacks")]
+            public int BleedStackPercent { get; set; } = 15;
 
         // Tourney
         [SettingPropertyBool("Enable Partial Tourney Reward", Order = 0, IsToggle = true, HintText = "When enabled, losing a tourney will still reward some gold based on the round reached.", RequireRestart = false)]

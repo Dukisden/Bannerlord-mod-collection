@@ -7,24 +7,23 @@ namespace DukisCollection.dk_Bleed
 {
     public class BleedMissionBehavior : MissionBehavior
     {
+        private static MCMSettings MCM = MCMSettings.Instance;
         public override MissionBehaviorType BehaviorType => MissionBehaviorType.Other;
-
         private readonly BleedLogic BleedManager = new();
 
         public override void OnRegisterBlow(Agent attacker, Agent victim, GameEntity realHitEntity, Blow blow, ref AttackCollisionData collisionData, in MissionWeapon attackerWeapon)
         {
-            if (MCMSettings.Instance != null && !MCMSettings.Instance.EnableBleed)
+            if (!MCM.EnableBleed)
             {
                 return;
             }
 
-            if (victim == null || blow.InflictedDamage <= 10 || victim.Health <= 0)
+            if (victim == null || victim.Health <= 0)
             {
                 return;
             }
 
             float bleedChance = BleedLogic.BleedProc(victim, blow, attackerWeapon, attacker);
-
 
             if (MBRandom.RandomFloat >= bleedChance)
             {
@@ -35,17 +34,10 @@ namespace DukisCollection.dk_Bleed
 
             if (bleedAmount > 0)
             {
-                if (attacker.IsMainAgent || victim.IsMainAgent)
-                {
-                    string info = $"Bleeding for {bleedAmount}";
-                    if (MCMSettings.Instance.BleedDebug)
-                    {
-                        info += $", victim hp: {victim.Health}, procced at {(int)(bleedChance * 100)}%";
-                    }
-                    Utils.Log(info);
-                }
                 BleedManager.AddBleed(victim, attacker, bleedAmount);
             }
+
+            BleedManager.ApplySlow(victim);
         }
 
         public override void OnMissionTick(float dt)
@@ -64,6 +56,11 @@ namespace DukisCollection.dk_Bleed
                     if (bleedStatus.Bled >= bleedStatus.BleedAmount || !bleedStatus.Agent.IsActive())
                     {
                         toRemove.Add(index);
+                        BleedManager.ApplySlow(bleedStatus.Agent, true);
+                    }
+                    else
+                    {
+                        BleedManager.ApplySlow(bleedStatus.Agent);
                     }
                 }
             }
@@ -72,7 +69,6 @@ namespace DukisCollection.dk_Bleed
             {
                 BleedManager.BleedingAgents.Remove(index);
             }
-
         }
     }
 }
