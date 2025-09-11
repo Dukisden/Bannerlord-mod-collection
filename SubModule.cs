@@ -9,6 +9,7 @@ namespace DukisCollection
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
+
             Harmony harmony = new Harmony("DukisCollection");
             harmony.PatchAll();
         }
@@ -16,11 +17,20 @@ namespace DukisCollection
         public override void OnMissionBehaviorInitialize(Mission mission)
         {
             base.OnMissionBehaviorInitialize(mission);
+
             if (mission.CombatType.ToString() == "Combat")
             {
                 mission.AddMissionBehavior(new dk_Bleed.BleedMissionBehavior());
             }
         }
+        public override void OnConfigChanged()
+        {
+            base.OnConfigChanged();
 
+            MCMSettings.Instance.ToggleSettingsArmor = false;
+            MCMSettings.Instance.ToggleSettingsDamage = false;
+            MCMSettings.Instance.ToggleSettingsDeath = false;
+            MCMSettings.Instance.ToggleSettingsBleed = false;
+        }
     }
 }

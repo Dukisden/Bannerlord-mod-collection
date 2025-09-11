@@ -27,6 +27,7 @@ namespace DukisCollection.dk_Bleed
 
             if (MBRandom.RandomFloat >= bleedChance)
             {
+                BleedManager.ApplySlow(victim);
                 return;
             }
 

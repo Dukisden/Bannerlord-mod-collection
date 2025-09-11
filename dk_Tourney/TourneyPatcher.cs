@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using SandBox.Tournaments.MissionLogics;
-using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.Settlements;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using static TaleWorlds.CampaignSystem.CharacterDevelopment.DefaultPerks;
 
 namespace DukisCollection.dk_Bleed
 {
@@ -27,7 +26,7 @@ namespace DukisCollection.dk_Bleed
             {
                 return 0f;
             }
-
+            
             // Config values
             float procBasePlayer    = MCM.BC_Player;
             float procBaseHero      = MCM.BC_Hero;
@@ -39,6 +38,9 @@ namespace DukisCollection.dk_Bleed
 
             float minChance         = MCM.BleedMinChance;
             float minChanceDagger   = MCM.BleedMinChanceDagger;
+            float troopPenalty      = MCM.BC_TroopPenalty;
+
+            string extra = "";
 
             // Core calculations
             float damagePercent = blow.InflictedDamage / victim.HealthLimit;
@@ -52,7 +54,7 @@ namespace DukisCollection.dk_Bleed
             float healthMod = healthPercent * healthFactor;
 
             float procChance = baseChance + damageMod - armorMod - healthMod;
-
+            
             procChance = Math.Max(procChance, minChance);
 
             procChance *= bodyPartMultiplier;
@@ -63,17 +65,19 @@ namespace DukisCollection.dk_Bleed
             if (attackerWeapon.CurrentUsageItem != null && attackerWeapon.CurrentUsageItem.WeaponClass == WeaponClass.Dagger)
             {
                 procChance = Math.Max(procChance, minChanceDagger);
+                extra += $", dagger min: {minChanceDagger}%";
             }
 
             if (!attacker.IsHero)
             {
-                procChance *= MCM.BC_TroopPenalty / 100f;
+                procChance *= troopPenalty / 100f;
+                extra += $", troop penalty: {troopPenalty}%";
             }
 
             // Logging
             if (MCM.BleedDebug && (attacker.IsMainAgent || victim.IsMainAgent))
             {
-                Utils.Log($"Proc chance: {(int)(procChance)}% (base:{baseChance}, dmg: +{(int)(damageMod)}, armor: -{(int)(armorMod)}, hp: -{(int)(healthMod)}, bodypart: x{bodyPartMultiplier})");
+                Utils.Log($"Proc chance: {(int)(procChance)}% (base:{baseChance}, dmg: +{(int)(damageMod)}, armor: -{(int)(armorMod)}, hp: -{(int)(healthMod)}, bodypart: x{bodyPartMultiplier}{extra})");
             }
 
             return procChance / 100f;
@@ -191,10 +195,7 @@ namespace DukisCollection.dk_Bleed
 
             float finalSlow = healthSlow * bleedSlow;
 
-            Utils.Log($"{agent.GetCurrentSpeedLimit()}, finalSlow");
             agent.SetMaximumSpeedLimit(finalSlow, true);
-            Utils.Log($"{agent.GetCurrentSpeedLimit()}");
-            Utils.Log("---");
         }
 
         private static void KillAgent(Agent victim, Agent attacker, int bled)
