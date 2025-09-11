@@ -1,4 +1,5 @@
 ﻿using DukisCollection.dk_Companions;
+using DukisCollection.dk_Tourney;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
@@ -53,6 +54,8 @@ namespace DukisCollection
         public override void RegisterEvents()
         {
             CampaignEvents.HeroKilledEvent.AddNonSerializedListener(this, PreserveCompanion.OnHeroKilled);
+            CampaignEvents.OnPlayerJoinedTournamentEvent.AddNonSerializedListener(this, PartialTourneyReward.OnPlayerJoined);
+            CampaignEvents.PlayerEliminatedFromTournament.AddNonSerializedListener(this, PartialTourneyReward.OnPlayerEliminated);
         }
 
         public override void SyncData(IDataStore dataStore) {}
