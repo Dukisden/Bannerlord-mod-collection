@@ -1,4 +1,7 @@
-﻿using HarmonyLib;
+﻿using DukisCollection.dk_Companions;
+using HarmonyLib;
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 
@@ -32,5 +35,26 @@ namespace DukisCollection
             MCMSettings.Instance.ToggleSettingsDeath = false;
             MCMSettings.Instance.ToggleSettingsBleed = false;
         }
+
+        protected override void InitializeGameStarter(Game game, IGameStarter starterObject)
+        {
+            base.InitializeGameStarter(game, starterObject);
+
+            if (game.GameType is Campaign)
+            {
+                CampaignGameStarter campaignGameStarter = (CampaignGameStarter)starterObject;
+                campaignGameStarter.AddBehavior(new DK_CollectionBehavior());
+            }
+        }
+    }
+
+    internal class DK_CollectionBehavior : CampaignBehaviorBase
+    {
+        public override void RegisterEvents()
+        {
+            CampaignEvents.HeroKilledEvent.AddNonSerializedListener(this, PreserveCompanion.OnHeroKilled);
+        }
+
+        public override void SyncData(IDataStore dataStore) {}
     }
 }

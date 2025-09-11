@@ -6,17 +6,24 @@ using TaleWorlds.Library;
 
 namespace DukisCollection.dk_Companions
 {
-    [HarmonyPatch]
-    internal class CompanionPatcher
+    internal class PreserveCompanion
     {
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(RemoveCompanionAction), nameof(RemoveCompanionAction.ApplyByDeath))]
-        public static void KeepCompanionOnClanPageOnDeath(Clan clan, Hero companion)
+        private static MCMSettings MCM = MCMSettings.Instance;
+
+        public static void OnHeroKilled(Hero victim, Hero killer, KillCharacterAction.KillCharacterActionDetail detail, bool showNotification = true)
         {
-            if (MCMSettings.Instance != null && !MCMSettings.Instance.EnableCompanions)
+            if (!MCM.EnableCompanions)
             {
                 return;
             }
+
+            if (victim.CompanionOf != Clan.PlayerClan && victim.Occupation != Occupation.Wanderer)
+            {
+                return;
+            }
+
+            Hero companion = victim;
+            Clan clan = Clan.PlayerClan;
 
             InformationManager.ShowInquiry(new InquiryData(
                 $"Preserve {companion.Name} on clan page ?",
@@ -24,7 +31,6 @@ namespace DukisCollection.dk_Companions
                 true, true,
                 "Yes", "No",
                 () => {
-                    companion.CompanionOf = null;
                     companion.Clan = clan;
                     companion.SetNewOccupation(Occupation.Lord);
                 },
