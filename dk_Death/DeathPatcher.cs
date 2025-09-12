@@ -23,8 +23,18 @@ namespace DukisCollection.dk_Death
 
             if (character.IsHero)
             {
-                float multiplier = 1f;
                 Hero hero = character.HeroObject;
+
+                float deathChance = 1f - __result;
+                float _deathChance = deathChance;
+
+                if (MCM.DeathBias != 50f)
+                {
+                    deathChance = CalculateDeathChanceWithNewBias(deathChance, MCM.DeathBias);
+                    _deathChance = deathChance;
+                }
+
+                float multiplier = 1f;
 
                 if (hero == Hero.MainHero)
                 {
@@ -47,11 +57,11 @@ namespace DukisCollection.dk_Death
                     multiplier = MCM.DeathFactorAi;
                 }
 
-                float deathChance = (1f - __result) * multiplier;
+                deathChance *= multiplier;
 
                 if (MCM.DeathDebug)
                 {
-                    Utils.Log($"Death chance: {(int)(MBMath.ClampFloat(deathChance, 0f, 1f) * 100)}%, was {(int)((1f - __result) * 100)}%");
+                    Utils.Log($"Death chance: {stringify(deathChance)} (was {stringify(_deathChance)} before multipliers and {stringify(1f - __result)} natively)");
                 }
 
                 // result is survival chance
@@ -79,11 +89,35 @@ namespace DukisCollection.dk_Death
 
             if (MCM.DeathDebug)
             {
-                Utils.Log($"Death chance with Formation: {(int)(MBMath.ClampFloat(deathChance, 0f, 1f) * 100)}%, was {(int)((__result) * 100)}%");
+                Utils.Log($"Death chance with Formation: {stringify(deathChance)} (was {stringify(__result)})");
             }
 
             // result is death chance
             __result = MBMath.ClampFloat(deathChance, 0f, 1f);
+        }
+
+        public static string CalculateEstimate(float bias)
+        {
+            return (CalculateDeathChanceWithNewBias(0.0085f, bias) * 100f).ToString("F2") + "%";
+        }
+
+        private static float CalculateDeathChanceWithNewBias(float oldDeathChance, float newDeathBias)
+        {
+            float nativeBias = 50f;
+            float fudgeValue = 2.5f; // normally, this is the result of calculation with armor, age, medecine, ..
+
+            // approximately reverse engineering the death chance calculation, see DefaultPartyHealingModel.GetSurvivalChance()
+            float valueBeforeBias = ((1f / oldDeathChance) - fudgeValue) / nativeBias;
+
+            float newBiasedValue = valueBeforeBias * newDeathBias;
+
+            // recalculate the death chance with our new bias
+            return 1f / (newBiasedValue + valueBeforeBias);
+        }
+
+        private static string stringify(float deathChance)
+        {
+            return (MBMath.ClampFloat(deathChance, 0f, 1f) * 100).ToString("F2") + "%";
         }
     }
 }

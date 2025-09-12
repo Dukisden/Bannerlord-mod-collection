@@ -1,4 +1,5 @@
-﻿using MCM.Abstractions.Attributes;
+﻿using DukisCollection.dk_Death;
+using MCM.Abstractions.Attributes;
 using MCM.Abstractions.Attributes.v2;
 using MCM.Abstractions.Base.Global;
 
@@ -18,6 +19,35 @@ namespace DukisCollection
         public override string FolderName => "DukisCollection";
         public override string FormatType => "json2";
 
+        private string _settingsVersion = "0";
+        [SettingPropertyText("Config version", RequireRestart = false)]
+        [SettingPropertyGroup("Debug", GroupOrder = 999)]
+        public string SettingsVersion 
+        { 
+            get => _settingsVersion; 
+            set => _settingsVersion = SubModule.SettingsVersion;
+        }
+
+        public void CheckVersion()
+        {
+            string settingsVersion = SubModule.SettingsVersion;
+            string savedSettingsVersion = SettingsVersion;
+
+            if (savedSettingsVersion != settingsVersion)
+            {
+                if (savedSettingsVersion == "0")
+                {
+                    if (EnableDeath)
+                    {
+                        Utils.Log("Duki's Collection death settings have changed since last version, verify your config.", true);
+                    }
+                }
+
+                SettingsVersion = settingsVersion;
+                OnPropertyChanged(nameof(SettingsVersion));
+            }
+        }
+
         // Bleed
         [SettingPropertyBool("Enable Bleed", Order = 0, IsToggle = true, RequireRestart = false)]
         [SettingPropertyGroup("Bleed")]
@@ -33,7 +63,7 @@ namespace DukisCollection
 
             [SettingPropertyInteger("Max Bleed Duration", 5, 60, "#s", Order = 0, HintText = "Maximum duration that a bleed effect can last. If bleed damage is lower: duration will be shorter. If bleed damage is higher: bleed will deal more damage per tick. Default: 15", RequireRestart = false)]
             [SettingPropertyGroup("Bleed/Show Settings/Main", GroupOrder = -10)]
-            public int MaxBleedDuration { get; set; } = 20;
+            public int MaxBleedDuration { get; set; } = 15;
 
             [SettingPropertyInteger("Relative speed of bleeding units", 0, 100, "0'%'",Order = 1, HintText = "Units affected by bleeding will move at this % of their normal speed. Default: 70", RequireRestart = false)]
             [SettingPropertyGroup("Bleed/Show Settings/Main", GroupOrder = -10)]
@@ -103,7 +133,7 @@ namespace DukisCollection
             public float BC_Legs { get; set; } = 0.3f;
 
             // Minimum chances
-            [SettingPropertyInteger("Minimum Damage to trigger bleed", 0, 100, "0", Order = 0, HintText = "Hits bellow this value will never cause bleeding. Default: 10", RequireRestart = false)]
+            [SettingPropertyInteger("Minimum Damage to trigger bleed", 0, 100, "0'dmg'", Order = 0, HintText = "Hits bellow this value will never cause bleeding. Default: 10", RequireRestart = false)]
             [SettingPropertyGroup("Bleed/Show Settings/Proc/Minimum Chances")]
             public float MinDamageForBleed { get; set; } = 10;
 
@@ -154,11 +184,11 @@ namespace DukisCollection
         [SettingPropertyGroup("Partial Tourney Reward")]
         public bool EnableTourney { get; set; } = false;
 
-            [SettingPropertyInteger("Entry Fee", 0, 1000, "g", Order = 10, HintText = "Base cost for participating in a tournament.", RequireRestart = false)]
+            [SettingPropertyInteger("Entry Fee", 0, 1000, "g", Order = 10, HintText = "Base cost for participating in a tournament. Default: 100", RequireRestart = false)]
             [SettingPropertyGroup("Partial Tourney Reward", GroupOrder = 1)]
             public int EntryFee { get; set; } = 100;
 
-            [SettingPropertyInteger("Round reward base", 0, 500, Order = 20, HintText = "Base reward for winning rounds. Is then multiplied by round². For a 50 base: Round 1 = 50g, 2 = 200g, 3 = 450g", RequireRestart = false)]
+            [SettingPropertyInteger("Round reward base", 0, 500, Order = 20, HintText = "Base reward for winning rounds. Is then multiplied by round² (round1: x1, round2: x4, round3: x9). Default: 50", RequireRestart = false)]
             [SettingPropertyGroup("Partial Tourney Reward", GroupOrder = 1)]
             public int RoundRewardBase { get; set; } = 50;
 
@@ -171,15 +201,15 @@ namespace DukisCollection
         [SettingPropertyGroup("Amplify armor effect/Show Settings")]
         public bool ToggleSettingsArmor { get; set; } = false;
 
-            [SettingPropertyInteger("Extra armor efficacy vs Cut", 0, 200, "0'%'", Order = 1, HintText = "0% = no change, 100% = armor absorbs twice as much", RequireRestart = false)]
+            [SettingPropertyInteger("Extra armor efficacy vs Cut", 0, 200, "0'%'", Order = 1, HintText = "0% = no change, 100% = armor absorbs twice as much. Default: 20", RequireRestart = false)]
             [SettingPropertyGroup("Amplify armor effect/Show Settings")]
             public int CutMult { get; set; } = 20;
 
-            [SettingPropertyInteger("Reduced armor efficacy vs Blunt", 0, 100, "0'%'", Order = 2, HintText = "0% = no change, 100% = armor has no effect vs blunt damage", RequireRestart = false)]
+            [SettingPropertyInteger("Reduced armor efficacy vs Blunt", 0, 100, "0'%'", Order = 2, HintText = "0% = no change, 100% = armor has no effect vs blunt damage. Default: 20", RequireRestart = false)]
             [SettingPropertyGroup("Amplify armor effect/Show Settings")]
             public int BluntMult { get; set; } = 20;
 
-            [SettingPropertyInteger("Extra Axe damage vs Shields", 0, 200, "0'%'", Order = 3, HintText = "0% = no change, 100% = Shields take 2 times more damage from axes", RequireRestart = false)]
+            [SettingPropertyInteger("Extra Axe damage vs Shields", 0, 200, "0'%'", Order = 3, HintText = "0% = no change, 100% = Shields take 2 times more damage from axes. Default: 75", RequireRestart = false)]
             [SettingPropertyGroup("Amplify armor effect/Show Settings")]
             public int ShieldMult { get; set; } = 75;
 
@@ -237,23 +267,46 @@ namespace DukisCollection
         [SettingPropertyGroup("More Hero Deaths/Show Settings")]
         public bool ToggleSettingsDeath { get; set; } = false;
 
-            [SettingPropertyFloatingInteger("Player death chance", 0f, 100f, "0.0x", Order = 10, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
+            private float _deathBias = 50;
+            [SettingPropertyInteger("Hero survival bias", 0, 50, "0.#", Order = 0, HintText = "The game applies a huge survivibility bias for heros, making them very unlikely to die. You can reduce it to globally raise the death chance. Native: 50", RequireRestart = false)]
+            [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
+            public float DeathBias
+            {
+                get => _deathBias;
+                set
+                {
+                    _deathBias = value;
+                    DeathEstimate = "update";
+                    OnPropertyChanged(nameof(DeathEstimate));
+                }
+            }
+
+            private string _deathEstimate = "0.85%";
+            [SettingPropertyText("Aproximate average death chance", Order = 1, HintText = "This is to give you an idea of the approximate average death chance for a lord, before the multipliers bellow. The real number will be higher or lower depending on the specific hero's armor, age etc.", RequireRestart = false)]
+            [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
+            public string DeathEstimate
+            {
+                get => _deathEstimate;
+                set => _deathEstimate = DeathPatcher.CalculateEstimate(_deathBias);
+            }
+
+            [SettingPropertyFloatingInteger("Player death chance", 0f, 10f, "0.0x", Order = 10, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
             public float DeathFactorPlayer { get; set; } = 5f;
 
-            [SettingPropertyFloatingInteger("Player Family death chance", 0f, 100f, "0.0x", Order = 20, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
+            [SettingPropertyFloatingInteger("Player Family death chance", 0f, 10f, "0.0x", Order = 20, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
             public float DeathFactorFamily { get; set; } = 3f;
 
-            [SettingPropertyFloatingInteger("Player Clan death chance", 0f, 100f, "0.0x", Order = 30, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
+            [SettingPropertyFloatingInteger("Player Clan death chance", 0f, 10f, "0.0x", Order = 30, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
             public float DeathFactorClan { get; set; } = 5f;
 
-            [SettingPropertyFloatingInteger("Player Kingdom death chance", 0f, 100f, "0.0x", Order = 40, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
+            [SettingPropertyFloatingInteger("Player Kingdom death chance", 0f, 10f, "0.0x", Order = 40, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
             public float DeathFactorKingdom { get; set; } = 5f;
 
-            [SettingPropertyFloatingInteger("Ai death chance", 0f, 100f, "0.0x", Order = 50, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
+            [SettingPropertyFloatingInteger("Ai death chance", 0f, 10f, "0.0x", Order = 50, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
             public float DeathFactorAi { get; set; } = 5f;
 

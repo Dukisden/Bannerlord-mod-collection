@@ -3,6 +3,7 @@ using DukisCollection.dk_Tourney;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 
 
@@ -10,6 +11,9 @@ namespace DukisCollection
 {
     public class SubModule : MBSubModuleBase
     {
+        public static string Version = ModuleHelper.GetModuleInfo("DukisCollection").Version.ToString();
+        public static string SettingsVersion = "1";
+
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
@@ -43,6 +47,8 @@ namespace DukisCollection
 
             if (game.GameType is Campaign)
             {
+                MCMSettings.Instance.CheckVersion();
+
                 CampaignGameStarter campaignGameStarter = (CampaignGameStarter)starterObject;
                 campaignGameStarter.AddBehavior(new DK_CollectionBehavior());
             }
