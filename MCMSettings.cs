@@ -214,7 +214,7 @@ namespace DukisCollection
             public int ShieldMult { get; set; } = 75;
 
         // Damage multipliers
-        [SettingPropertyBool("Damage Received Multipliers", Order = 0, IsToggle = true)]
+        [SettingPropertyBool("Damage Received Multipliers", Order = 0, IsToggle = true, RequireRestart = false)]
         [SettingPropertyGroup("Damage Received Multipliers")]
         public bool EnableDamageMults { get; set; } = false;
 

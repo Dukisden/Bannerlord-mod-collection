@@ -16,6 +16,11 @@ namespace DukisCollection.dk_Death
         [HarmonyPatch(typeof(DefaultPartyHealingModel), "GetSurvivalChance")]
         public static void DieDieDie(CharacterObject character, ref float __result)
         {
+            if (MCM == null)
+            {
+                MCM = MCMSettings.Instance;
+            }
+
             if (!MCM.EnableDeath)
             {
                 return;
