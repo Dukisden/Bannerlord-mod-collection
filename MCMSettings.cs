@@ -175,9 +175,9 @@ namespace DukisCollection
             [SettingPropertyGroup("Bleed/Show Settings/Damage/Stacks")]
             public int BleedStackFlat { get; set; } = 1;
 
-            [SettingPropertyInteger("Percent of new hit damage added per Stack (%)", 0, 100, "#'%'", Order = 1, HintText = "Percentage of the new hit damage added to current bleed for each additional stack. Default: 15", RequireRestart = false)]
+            [SettingPropertyInteger("Percent of new hit damage added per Stack (%)", 0, 100, "#'%'", Order = 1, HintText = "Percentage of the new hit damage added to current bleed for each additional stack. Default: 33", RequireRestart = false)]
             [SettingPropertyGroup("Bleed/Show Settings/Damage/Stacks")]
-            public int BleedStackPercent { get; set; } = 15;
+            public int BleedStackPercent { get; set; } = 33;
 
         // Tourney
         [SettingPropertyBool("Enable Partial Tourney Reward", Order = 0, IsToggle = true, HintText = "When enabled, losing a tourney will still reward some gold based on the round reached.", RequireRestart = false)]
@@ -292,23 +292,23 @@ namespace DukisCollection
 
             [SettingPropertyFloatingInteger("Player death chance", 0f, 10f, "0.0x", Order = 10, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
-            public float DeathFactorPlayer { get; set; } = 5f;
+            public float DeathFactorPlayer { get; set; } = 1f;
 
             [SettingPropertyFloatingInteger("Player Family death chance", 0f, 10f, "0.0x", Order = 20, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
-            public float DeathFactorFamily { get; set; } = 3f;
+            public float DeathFactorFamily { get; set; } = 1f;
 
             [SettingPropertyFloatingInteger("Player Clan death chance", 0f, 10f, "0.0x", Order = 30, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
-            public float DeathFactorClan { get; set; } = 5f;
+            public float DeathFactorClan { get; set; } = 1f;
 
             [SettingPropertyFloatingInteger("Player Kingdom death chance", 0f, 10f, "0.0x", Order = 40, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
-            public float DeathFactorKingdom { get; set; } = 5f;
+            public float DeathFactorKingdom { get; set; } = 1f;
 
             [SettingPropertyFloatingInteger("Ai death chance", 0f, 10f, "0.0x", Order = 50, HintText = "0 = no deaths, 1 = no change, 10 = ten times more likely to die.", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
-            public float DeathFactorAi { get; set; } = 5f;
+            public float DeathFactorAi { get; set; } = 1f;
 
             [SettingPropertyFloatingInteger("Player Formation death chance", 0f, 1f, "0.0x", Order = 60, HintText = "Extra death chance multiplier if the hero's formation has more than 15 alive units (does not apply to player.) 0 = never die, 1 = no change", RequireRestart = false)]
             [SettingPropertyGroup("More Hero Deaths/Show Settings", GroupOrder = 1)]
