@@ -17,7 +17,7 @@ namespace DukisCollection.dk_Companions
                 return;
             }
 
-            if (victim.CompanionOf != Clan.PlayerClan && victim.Occupation != Occupation.Wanderer)
+            if (victim.CompanionOf != Clan.PlayerClan || victim.Occupation != Occupation.Wanderer)
             {
                 return;
             }
